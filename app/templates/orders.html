@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="content-card">
+    <div class="card-header">
+      <h3><i class="fas fa-box"></i> Your Order History</h3>
+    </div>
+    <div class="card-body">
+      {% if orders %}
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Total Price</th>
+                <th scope="col">Total Items</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Details</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for order in orders %}
+                <tr>
+                  <td>{{ order.order_id }}</td>
+                  <td>${{ "%.2f"|format(order.total_price) }}</td>
+                  <td>{{ order.total_items }}</td>
+                  <td>{{ order.order_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+                  <td>
+                    {% if order.order_status is sameas false %}
+                      Pending
+                    {% elif order.order_status is sameas true %}
+                      Fulfilled
+                    {% else %}
+                      {{ order.order_status }}
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('order_items.get_order_items', order_id=order.order_id) }}" class="btn btn-primary btn-sm">
+                      View Items
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">You have no orders.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+
+<style>
+/* Content Card Styles */
+.content-card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.table {
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #3498db;
+    color: white;
+    font-weight: 500;
+}
+
+.table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+.btn-primary {
+    background-color: #3498db;
+    border-color: #3498db;
+    border-radius: 5px;
+    transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+</style>
+{% endblock %}
+
+
+

@@ -1,0 +1,283 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Edit address</h1>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('users.edit_address', address_id=address.id) }}" novalidate class="auth-form">
+                {{ form.hidden_tag() }}
+                
+                <div class="form-group">
+                    <label for="street" class="form-label">Street address</label>
+                    {{ form.street(class="form-control", value=address.street, placeholder="Enter street address") }}
+                    {% for error in form.street.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="city" class="form-label">City</label>
+                    {{ form.city(class="form-control", value=address.city, placeholder="Enter city") }}
+                    {% for error in form.city.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="state" class="form-label">State</label>
+                    {{ form.state(class="form-control", value=address.state, placeholder="Enter state") }}
+                    {% for error in form.state.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="zip_code" class="form-label">ZIP code</label>
+                    {{ form.zip_code(class="form-control", value=address.zip_code, placeholder="Enter ZIP code") }}
+                    {% for error in form.zip_code.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <div class="default-address-toggle">
+                        {{ form.is_default(class="form-check-input", id="is_default") }}
+                        {{ form.is_default.label(class="form-check-label", for="is_default") }}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-save"></i> Save changes
+                    </button>
+                </div>
+
+                <p class="form-notice">
+                    This address will be used for shipping and billing purposes.
+                </p>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <div class="back-link">
+                <a href="{{ url_for('users.profile', _anchor='v-pills-addresses') }}">
+                    <i class="fas fa-arrow-left"></i> Back to addresses
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-wrapper {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f6f8fa;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 440px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.auth-header h1 {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+    color: #24292f;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #24292f;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292f;
+    background-color: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    box-shadow: none;
+    transition: border-color .15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #0969da;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+}
+
+.error-message {
+    margin-top: 4px;
+    color: #cf222e;
+    font-size: 12px;
+}
+
+.default-address-toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+}
+
+.form-check-input {
+    margin-top: 0;
+}
+
+.form-check-label {
+    font-size: 14px;
+    color: #24292f;
+    margin-bottom: 0;
+}
+
+.btn-primary {
+    background-color: #1f883d;
+    border: 1px solid rgba(27, 31, 36, 0.15);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 16px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.btn-primary:hover {
+    background-color: #1a7f37;
+}
+
+.form-notice {
+    margin-top: 16px;
+    margin-bottom: 0;
+    font-size: 12px;
+    color: #57606a;
+    text-align: center;
+}
+
+.auth-footer {
+    text-align: center;
+    padding: 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background-color: #f6f8fa;
+}
+
+.back-link {
+    font-size: 14px;
+    color: #24292f;
+}
+
+.back-link a {
+    color: #0969da;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #1f883d;
+    background-color: #dafbe1;
+    border-color: rgba(31, 136, 61, 0.15);
+}
+
+.alert-danger {
+    color: #cf222e;
+    background-color: #ffebe9;
+    border-color: rgba(207, 34, 46, 0.15);
+}
+
+.alert-info {
+    color: #0969da;
+    background-color: #ddf4ff;
+    border-color: rgba(9, 105, 218, 0.15);
+}
+</style>
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 5000);
+        
+        // Real-time validation
+        $('.form-control').on('input', function() {
+            validateField($(this));
+        });
+        
+        function validateField(field) {
+            field.removeClass('is-invalid');
+            if (field.val().trim() === '') {
+                field.addClass('is-invalid');
+                return false;
+            }
+            return true;
+        }
+    });
+</script>
+{% endblock %}
+{% endblock %} 

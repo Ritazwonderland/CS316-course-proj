@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <!-- Fulfilled Orders Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3><i class="fas fa-check-circle"></i> Fulfilled Orders</h3>
+            <a href="http://localhost:8080/feedback" class="btn btn-primary btn-sm float-right">
+                View Order Feedback
+            </a>
+        </div>
+        <div class="card-body">
+            {% if fulfilled_orders %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date Ordered</th>
+                            <th>Total Items</th>
+                            <th>Buyer ID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in fulfilled_orders %}
+                        <tr>
+                            <td><a href="{{ url_for('order_history.order_info', order_id=order.id) }}">{{ order.id }}</a></td>
+                            <td>{{ order.date_order_placed }}</td>
+                            <td>{{ order.total_items }}</td>
+                            <td>{{ order.buyer_id }}</td>
+                            <td>
+                                <form action="{{ url_for('order_history.update_fulfillment', order_id=order.id, status=0) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-warning btn-sm">Mark as Not Fulfilled</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No fulfilled orders.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Not Fulfilled Orders Section -->
+    <div class="card">
+        <div class="card-header">
+            <h3><i class="fas fa-exclamation-circle"></i> Not Fulfilled Orders</h3>
+        </div>
+        <div class="card-body">
+            {% if not_fulfilled_orders %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Date Ordered</th>
+                            <th>Total Items</th>
+                            <th>Buyer ID</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in not_fulfilled_orders %}
+                        <tr>
+                            <td><a href="{{ url_for('order_history.order_info', order_id=order.id) }}">{{ order.id }}</a></td>
+                            <td>{{ order.date_order_placed }}</td>
+                            <td>{{ order.total_items }}</td>
+                            <td>{{ order.buyer_id }}</td>
+                            <td>
+                                <form action="{{ url_for('order_history.update_fulfillment', order_id=order.id, status=1) }}" method="POST" style="display:inline;">
+                                    <button type="submit" class="btn btn-success btn-sm">Mark as Fulfilled</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p class="text-muted">No pending orders.</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+{% endblock %}

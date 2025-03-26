@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-Amazon Search</title>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/example.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .navbar-custom {
+            background-color: #2c3e50;
+            border-color: #2c3e50;
+        }
+        .navbar-custom .navbar-brand,
+        .navbar-custom .navbar-nav > li > a {
+            color: #ffffff;
+        }
+        .card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border-radius: 8px;
+            padding: 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+        .container {
+            padding-top: 20px;
+        }
+        .navbar-nav > li > a:hover {
+            background-color: #34495e !important;
+        }
+        .jumbotron {
+            background-color: #ecf0f1;
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        .navbar-right {
+            margin-right: 15px;
+        }
+    
+        /* Add these new styles for active navigation */
+        .navbar-nav > li > a {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+    
+        .navbar-nav > li.active > a {
+            background-color: #34495e !important;
+            color: #fff !important;
+        }
+    
+        .navbar-nav > li.active > a:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: #3498db;
+        }
+    
+        .navbar-nav > li > a:hover {
+            background-color: #34495e !important;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search for Products</h1>
+    
+    <!-- Form to input the search term and select category -->
+    <form action="/search" method="GET">
+        <label for="search_term">Search Term:</label>
+        <input type="text" id="search_term" name="search_term" value="{{ search_term }}" required>
+        
+        <label for="category">Category:</label>
+        <select id="category" name="category" >
+            <option value="">Select a category</option>
+            <option value="None">None</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Books">Books</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Food">Food</option>
+            <option value="Home">Home</option>
+            <option value="Sports">Sports</option>
+            <option value="Toys">Toys</option>
+            <!-- Add more categories as needed -->
+        </select>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <!-- Uncomment the line below if you want to display images -->
+                <!--<th>Image</th>-->
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td><a href="{{ url_for('search.get_product', product_id=product.id) }}">{{ product.name }}</a></td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.price }}</td>
+                <!-- Uncomment the line below if you want to display images -->
+                <!--<td><img src="{{ product.image_url }}" alt="{{ product.name }}" width="100"></td>-->
+                
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

@@ -1,0 +1,390 @@
+{% extends "bootstrap/base.html" %}
+
+{% block head %}
+{{super()}}
+<!-- Add Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+<script>
+    // Configure Toastr
+    toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-center",
+        "timeOut": "5000",
+        "extendedTimeOut": "2000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+    }
+
+    // Prevent back navigation after logout
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+            if (sessionStorage.getItem('logged_out')) {
+                window.location.href = "{{ url_for('index.index') }}";
+            }
+        }
+    });
+
+    {% if session.get('just_logged_out') %}
+    sessionStorage.setItem('logged_out', 'true');
+    {% endif %}
+
+    {% if current_user.is_authenticated %}
+    sessionStorage.removeItem('logged_out');
+    {% endif %}
+</script>
+
+{% if current_user.is_authenticated %}
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, private">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+{% endif %}
+{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+<style>
+    .navbar-custom {
+        background-color: #2c3e50;
+        border-color: #2c3e50;
+    }
+    .navbar-custom .navbar-brand,
+    .navbar-custom .navbar-nav > li > a {
+        color: #ffffff;
+    }
+    .card {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+        border-radius: 8px;
+        padding: 15px;
+        background: white;
+        border: 1px solid #e0e0e0;
+    }
+    .product-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 20px;
+    }
+    .btn-primary {
+        background-color: #3498db;
+        border-color: #3498db;
+    }
+    .btn-primary:hover {
+        background-color: #2980b9;
+        border-color: #2980b9;
+    }
+    .container {
+        padding-top: 20px;
+    }
+    .navbar-nav > li > a:hover {
+        background-color: #34495e !important;
+    }
+    .jumbotron {
+        background-color: #ecf0f1;
+        border-radius: 8px;
+        padding: 30px;
+        margin-bottom: 30px;
+    }
+    .navbar-right {
+        margin-right: 15px;
+    }
+
+    /* Add these new styles for active navigation */
+    .navbar-nav > li > a {
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .navbar-nav > li.active > a {
+        background-color: #34495e !important;
+        color: #fff !important;
+    }
+
+    .navbar-nav > li.active > a:after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background-color: #3498db;
+    }
+
+    .navbar-nav > li > a:hover {
+        background-color: #34495e !important;
+    }
+
+    /* Enhanced Alert Styles */
+    .alert {
+        border: none;
+        border-radius: 8px;
+        padding: 15px 20px;
+        margin-bottom: 20px;
+        position: relative;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+    }
+
+    .alert-success {
+        background-color: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-info {
+        background-color: #d1ecf1;
+        color: #0c5460;
+        border-left: 4px solid #17a2b8;
+    }
+
+    .alert-warning {
+        background-color: #fff3cd;
+        color: #856404;
+        border-left: 4px solid #ffc107;
+    }
+
+    .alert-danger {
+        background-color: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .alert i {
+        margin-right: 10px;
+    }
+
+    .alert .close {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.5;
+    }
+
+    .alert .close:hover {
+        opacity: 1;
+    }
+
+    /* Success Message Animation */
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .alert-success {
+        animation: slideInDown 0.5s ease-out;
+    }
+
+    /* Toast Customization */
+    .toast-success {
+        background-color: #28a745 !important;
+    }
+
+    .toast-info {
+        background-color: #17a2b8 !important;
+    }
+
+    .toast-warning {
+        background-color: #ffc107 !important;
+    }
+
+    .toast-error {
+        background-color: #dc3545 !important;
+    }
+
+    .registration-success {
+        background-color: #d1e7dd;
+        border: none;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 20px 0;
+        padding: 20px;
+    }
+
+    .registration-success .success-icon-wrapper {
+        color: #198754;
+        margin-right: 15px;
+    }
+
+    .registration-success .alert-heading {
+        color: #0f5132;
+        font-weight: 600;
+    }
+
+    .registration-success hr {
+        border-top-color: #a3cfbb;
+        margin: 15px 0;
+    }
+
+    .registration-success .btn-success {
+        background-color: #198754;
+        border: none;
+        padding: 8px 16px;
+        transition: all 0.3s ease;
+    }
+
+    .registration-success .btn-success:hover {
+        background-color: #146c43;
+        transform: translateY(-1px);
+    }
+
+    .registration-success .btn-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        opacity: 0.5;
+        transition: opacity 0.3s ease;
+    }
+
+    .registration-success .btn-close:hover {
+        opacity: 1;
+    }
+
+    @keyframes slideInDown {
+        from {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .registration-success {
+        animation: slideInDown 0.5s ease-out;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get current page URL
+    var currentLocation = window.location.pathname;
+    
+    // Remove all active classes first
+    document.querySelectorAll('.navbar-nav li').forEach(function(li) {
+        li.classList.remove('active');
+    });
+    
+    // Add active class based on current URL
+    document.querySelectorAll('.navbar-nav li a').forEach(function(a) {
+        var href = a.getAttribute('href');
+        if (href === currentLocation || currentLocation.startsWith(href)) {
+            a.parentElement.classList.add('active');
+        }
+    });
+
+    // Special case for profile tabs
+    if (currentLocation.includes('/profile')) {
+        document.querySelector('a[href*="profile"]').parentElement.classList.add('active');
+    }
+    if (currentLocation.includes('/dashboard')) {
+        document.querySelector('a[href*="dashboard"]').parentElement.classList.add('active');
+    }
+});
+</script>
+{% endblock %}
+
+{% block title %}Mini Amazon{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-custom">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar" style="background-color: white;"></span>
+                <span class="icon-bar" style="background-color: white;"></span>
+                <span class="icon-bar" style="background-color: white;"></span>
+            </button>
+            <a class="navbar-brand" href="{{ url_for('index.index') }}">Mini Amazon</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="{{ 'active' if request.endpoint == 'search.search' }}">
+                    <a href="{{ url_for('search.search') }}"><i class="fas fa-search-dollar"></i> Search</a>
+                </li>
+                {% if current_user.is_authenticated %}
+                <li class="{{ 'active' if request.endpoint == 'users.profile' }}">
+                    <a href="{{ url_for('users.profile') }}"><i class="fas fa-user"></i> Profile</a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'order_history.order_history' }}">
+                    <a href="{{ url_for('order_history.order_history') }}"><i class="fas fa-history"></i> Orders</a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'inventory.inventory' }}">
+                    <a href="{{ url_for('inventory.inventory') }}"><i class="fas fa-box"></i> Inventory</a>
+                </li>
+                {% endif %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li class="{{ 'active' if request.endpoint == 'cart_items.get_cart' }}">
+                    <a href="{{ url_for('cart_items.get_cart') }}"><i class="fas fa-shopping-cart"></i> Cart</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('users.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </li>
+                {% else %}
+                <li class="{{ 'active' if request.endpoint == 'users.login' }}">
+                    <a href="{{ url_for('users.login') }}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                </li>
+                <li class="{{ 'active' if request.endpoint == 'users.register' }}">
+                    <a href="{{ url_for('users.register') }}"><i class="fas fa-user-plus"></i> Register</a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+        {% if "Congratulations" in message %}
+        <div class="alert alert-success alert-dismissible fade show registration-success" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="success-icon-wrapper me-3">
+                    <i class="fas fa-check-circle fa-2x"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <h4 class="alert-heading mb-2">Welcome aboard! 🎉</h4>
+                    <p class="mb-0">Your account has been created successfully.</p>
+                    <hr>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <p class="mb-0 text-success">Ready to start shopping?</p>
+                        <a href="{{ url_for('users.login') }}" class="btn btn-success btn-sm">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log In Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% else %}
+        <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    {% block app_content %}{% endblock %}
+</div>
+{% endblock %}

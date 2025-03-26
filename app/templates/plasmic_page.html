@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_name }} - Plasmic Content</title>
+    
+    <!-- Add Plasmic runtime CSS -->
+    <link rel="stylesheet" href="https://static1.plasmic.app/css/plasmic.css"/>
+    
+    <!-- Add any additional CSS you need -->
+    <style>
+        .plasmic-content {
+            margin: 20px;
+            padding: 20px;
+        }
+        
+        .error-message {
+            color: red;
+            padding: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="plasmic-content">
+        {% if content %}
+            <!-- Add a div for Plasmic content -->
+            <div id="plasmic-root"></div>
+            
+            <!-- Add the content as a JSON script tag -->
+            <script id="plasmic-data" type="application/json">
+                {{ content | tojson | safe }}
+            </script>
+            
+            <!-- Add Plasmic runtime JS -->
+            <script src="https://static1.plasmic.app/runtime/runtime.js"></script>
+            
+            <!-- Initialize Plasmic content -->
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    try {
+                        const content = JSON.parse(document.getElementById('plasmic-data').textContent);
+                        const root = document.getElementById('plasmic-root');
+                        
+                        // Initialize Plasmic runtime with the content
+                        window.PlasmicRuntime.renderIntoRoot({
+                            component: content,
+                            root: root,
+                            projectId: '{{ content.projectId }}',
+                        });
+                    } catch (error) {
+                        console.error('Error rendering Plasmic content:', error);
+                        document.getElementById('plasmic-root').innerHTML = 
+                            '<div class="error-message">Error rendering content</div>';
+                    }
+                });
+            </script>
+        {% else %}
+            <div class="error-message">No content available</div>
+        {% endif %}
+    </div>
+</body>
+</html>

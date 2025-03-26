@@ -1,0 +1,308 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Withdraw funds</h1>
+            </div>
+
+            <div class="balance-display">
+                <span class="balance-label">Current Balance:</span>
+                <span class="balance-amount">${{ "%.2f"|format(current_balance) }}</span>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form method="POST" novalidate class="auth-form">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="amount" class="form-label">Amount to withdraw</label>
+                    <div class="amount-input-wrapper">
+                        <span class="currency-symbol">$</span>
+                        {{ form.amount(class="form-control", placeholder="0.00", data_balance=current_balance) }}
+                    </div>
+                    <div class="error-message" id="amount-error" style="display: none;"></div>
+                    {% for error in form.amount.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary w-100", value="Withdraw funds") }}
+                </div>
+
+                <p class="form-notice">
+                    Funds will be withdrawn from your account immediately after confirmation.
+                </p>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <div class="back-link">
+                <a href="{{ url_for('users.profile', _anchor='v-pills-balance') }}">
+                    <i class="fas fa-arrow-left"></i> Back to balance
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-wrapper {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f6f8fa;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 308px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.auth-header h1 {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+    color: #24292f;
+}
+
+.balance-display {
+    background-color: #f6f8fa;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.balance-label {
+    font-size: 14px;
+    color: #57606a;
+    margin-right: 8px;
+}
+
+.balance-amount {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f883d;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #24292f;
+    margin-bottom: 6px;
+}
+
+.amount-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.currency-symbol {
+    position: absolute;
+    left: 12px;
+    color: #57606a;
+    font-size: 14px;
+}
+
+.amount-input-wrapper .form-control {
+    padding-left: 24px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292f;
+    background-color: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    box-shadow: none;
+    transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #0969da;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+}
+
+.form-control.is-invalid {
+    border-color: #cf222e;
+}
+
+.form-control.is-invalid:focus {
+    border-color: #cf222e;
+    box-shadow: 0 0 0 3px rgba(207, 34, 46, 0.3);
+}
+
+.error-message {
+    margin-top: 4px;
+    color: #cf222e;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: #1f883d;
+    border: 1px solid rgba(27, 31, 36, 0.15);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 16px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1a7f37;
+}
+
+.btn-primary:disabled {
+    background-color: #94d3a2;
+    cursor: not-allowed;
+}
+
+.form-notice {
+    margin-top: 16px;
+    margin-bottom: 0;
+    font-size: 12px;
+    color: #57606a;
+    text-align: center;
+}
+
+.auth-footer {
+    text-align: center;
+    padding: 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background-color: #f6f8fa;
+}
+
+.back-link {
+    font-size: 14px;
+    color: #24292f;
+}
+
+.back-link a {
+    color: #0969da;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.back-link a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #1f883d;
+    background-color: #dafbe1;
+    border-color: rgba(31, 136, 61, 0.15);
+}
+
+.alert-danger {
+    color: #cf222e;
+    background-color: #ffebe9;
+    border-color: rgba(207, 34, 46, 0.15);
+}
+
+.alert-info {
+    color: #0969da;
+    background-color: #ddf4ff;
+    border-color: rgba(9, 105, 218, 0.15);
+}
+</style>
+
+{% block scripts %}
+{{ super() }}
+<script>
+    $(document).ready(function() {
+        // Auto-dismiss alerts after 5 seconds
+        setTimeout(function() {
+            $(".alert").alert('close');
+        }, 5000);
+        
+        // Get the current balance from the input's data attribute
+        const currentBalance = parseFloat($('#amount').data('balance'));
+        const submitButton = $('button[type="submit"]');
+        
+        // Real-time validation
+        $('#amount').on('input', function() {
+            const amount = parseFloat($(this).val());
+            const amountError = $('#amount-error');
+            
+            // Reset validation state
+            $(this).removeClass('is-invalid');
+            amountError.hide();
+            submitButton.prop('disabled', false);
+            
+            // Validate amount
+            if (isNaN(amount) || amount <= 0) {
+                $(this).addClass('is-invalid');
+                amountError.text('Please enter a valid amount greater than 0').show();
+                submitButton.prop('disabled', true);
+            } else if (amount > currentBalance) {
+                $(this).addClass('is-invalid');
+                amountError.text(`Insufficient funds. Your current balance is $${currentBalance.toFixed(2)}`).show();
+                submitButton.prop('disabled', true);
+            }
+        });
+        
+        // Form submission validation
+        $('form').on('submit', function(e) {
+            const amount = parseFloat($('#amount').val());
+            
+            if (isNaN(amount) || amount <= 0 || amount > currentBalance) {
+                e.preventDefault();
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}
+{% endblock %}

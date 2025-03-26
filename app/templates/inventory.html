@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% if current_user.is_authenticated %}
+
+{% block app_content %}
+
+<body>
+    <h1 style="text-align: center;">Inventory Management</h1>
+
+    <!-- Existing content of the Inventory Page (e.g., managing items) -->
+    <section>
+        <h2>Add New Items</h2>
+        
+        <!-- Form for adding new products to inventory -->
+        <form method="POST" action="{{ url_for('inventory.inventory') }}">
+            <label for="product_id">Product ID:</label>
+            <input type="text" name="product_id" id="product_id" required>
+            
+            <label for="quantity">Quantity:</label>
+            <input type="number" name="quantity" id="quantity" min="1" required>
+            
+            <button type="submit" class="btn btn-primary" name="action" value="add">
+                Add to Inventory
+            </button>
+        </form>
+    
+    </section>
+
+    <br> 
+    
+    <br>
+
+    <!-- Display inventory (if any) -->
+    {% if inventory_items %}        
+        {% for product in inventory_items %}
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">{{ product[1] }}</h4>
+                <p class="card-text">
+                    <strong>Product ID:</strong> {{ product[0] }}<br>
+                    <strong>Available Quantity:</strong> {{ product[2] }}<br>
+                    <strong>Popularity:</strong> {{ product[3] }}
+                <!-- Form for adding or removing items -->
+                <form method="POST" action="{{ url_for('inventory.inventory') }}">
+                    <input type="hidden" name="product_id" value="{{ product[0] }}">
+                    
+                    <label for="quantity_{{ product[0] }}">Quantity:</label>
+                    <input type="number" name="quantity" id="quantity_{{ product[0] }}" min="1" required>
+                    
+                    <button type="submit" class="btn btn-primary" name="action" value="add">Add</button>
+                    <button type="submit" class="btn btn-primary" name="action" value="remove">Remove</button>
+                </form>
+                </p>
+            </div>
+        </div>
+        {% endfor %}
+            
+    {% else %}
+    <p>No products found in the inventory for the given User ID.</p>
+    {% endif %}        
+
+</body>
+
+{% endblock %}
+
+{% endif %}

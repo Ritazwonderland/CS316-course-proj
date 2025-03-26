@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ product.name }} - Product Details</title>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+            margin: 20px;
+        }
+        .product-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            margin-bottom: 30px;
+        }
+        .product-name {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .product-price {
+            font-size: 1.5em;
+            color: #28a745;
+            margin-bottom: 15px;
+        }
+        .product-description {
+            font-size: 1.1em;
+            color: #555;
+        }
+        .add-to-cart-btn {
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 1.2em;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-to-cart-btn:hover {
+            background-color: #0056b3;
+        }
+        .seller-table, .feedback-table {
+            width: 100%;
+            margin-top: 20px;
+            border-collapse: collapse;
+        }
+        .seller-table th, .seller-table td,
+        .feedback-table th, .feedback-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        .seller-table th, .feedback-table th {
+            background-color: #f2f2f2;
+        }
+        .no-sellers, .no-feedbacks {
+            text-align: center;
+            margin-top: 20px;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="product-container">
+        <div class="product-name">{{ product.name }}</div>
+        <div class="product-price">${{ product.price }}</div>
+        <div class="product-description">{{ product.description }}</div>
+        <!-- Add to Cart Form -->
+        <form action="/add_to_cart/{{ product.id }}" method="POST">
+            <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+        </form>
+    </div>
+
+    {% if sellers %}
+    <h3>Sellers</h3>
+    <table class="seller-table">
+        <thead>
+            <tr>
+                <th>Seller ID</th>
+                <th>Quantity Available</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for seller in sellers %}
+            <tr>
+                <td>{{ seller.user_id }}</td>
+                <td>{{ seller.quantity }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-sellers">No sellers available for this product.</div>
+    {% endif %}
+
+    {% if feedbacks %}
+    <h3>Customer Feedback</h3>
+    <table class="feedback-table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>Review</th>
+                <th>Time Reviewed</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for feedback in feedbacks %}
+            <tr>
+                <td>{{ feedback.uid }}</td>
+                <td>{{ feedback.review }}</td>
+                <td>{{ feedback.time_reviewed }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div class="no-feedbacks">No feedback available for this product.</div>
+    {% endif %}
+</body>
+</html>

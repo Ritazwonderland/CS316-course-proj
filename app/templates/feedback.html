@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1>View Feedback</h1>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Styled Form</title>
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+      }
+
+      .form-container {
+          width: 400px;
+          margin-left: 20px;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          text-align: left;
+      }
+
+      .form-container p {
+          margin-bottom: 15px;
+      }
+
+      label {
+          font-weight: bold;
+          display: block;
+          margin-bottom: 5px;
+      }
+
+      input[type="text"], 
+      input[type="email"], 
+      input[type="password"] {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          font-size: 14px;
+      }
+
+      .btn {
+          display: inline-block;
+          background-color: #808080;
+          color: white;
+          padding: 10px 15px;
+          text-align: center;
+          text-decoration: none;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+      }
+
+      .btn:hover {
+          background-color: #696969;
+      }
+
+      .error-message {
+          color: red;
+          font-size: 12px;
+          margin-top: -8px;
+          margin-bottom: 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+      <form action="" method="post" novalidate>
+          {{ form.hidden_tag() }}
+          <p>
+              <label for="userid">{{ form.userid.label }}</label>
+              {{ form.userid(size=32, class_="form-input") }}
+              {% for error in form.userid.errors %}
+              <span class="error-message">{{ error }}</span>
+              {% endfor %}
+          </p>
+          <p>
+              {{ form.submit(class_="btn") }}
+          </p>
+      </form>
+  </div>
+</body>
+
+<br>
+
+{{ pagination.info }}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tables Side by Side</title>
+  <style>
+      .table-container {
+          display: inline-block;
+          margin: 10px;
+          vertical-align: top;
+      }
+      .styled-table {
+          border-collapse: collapse;
+      }
+      .styled-table th, .styled-table td {
+          border: 3px solid black;
+          padding: 8px;
+          text-align: left;
+      }
+      .styled-table th {
+          background-color: #f2f2f2;
+      }
+  </style>
+</head>
+<body>
+  <div class="table-container">
+      <table class="styled-table">
+          <tr>
+            <th>Number</th>
+            <th>User ID</th>
+            <th>Product ID</th>
+            <th>Seller ID</th>
+            <th>Review</th>
+            <th>Time of Review</th>
+          </tr>
+          {% for rev in feedback %}
+            <tr>
+              <td>{{loop.index + pagination.skip}}</td>
+              <td>{{rev.uid}}</td>
+              <td>{{rev.pid}}</td>
+              <td>{{rev.sid}}</td>
+              <td>{{rev.review}}</td>
+              <td>{{rev.time_reviewed}}</td>
+            </tr>
+          {% endfor %}
+      </table>
+  </div>
+</body>
+{{ pagination.links }}
+
+<br>
+</br>
+<br>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+      body {
+          font-family: Arial, sans-serif;
+          margin: 20px;
+      }
+
+      .form-container {
+          width: 400px;
+          margin: 10px;
+          padding: 20px;
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          background-color: #f9f9f9;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          text-align: left;
+      }
+
+      .form-container p {
+          margin-bottom: 15px;
+      }
+
+      label {
+          font-weight: bold;
+          display: block;
+          margin-bottom: 5px;
+      }
+
+      input[type="text"], 
+      input[type="email"], 
+      input[type="password"], 
+      input[type="number"] {
+          width: 100%;
+          padding: 8px;
+          margin-bottom: 10px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+          font-size: 14px;
+      }
+
+      .btn {
+          display: inline-block;
+          background-color: #808080;
+          color: white;
+          padding: 10px 15px;
+          text-align: center;
+          text-decoration: none;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+      }
+
+      .btn:hover {
+          background-color: #696969;
+      }
+
+      .form-wrapper {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: flex-start;
+      }
+
+      .form-title {
+          flex-basis: 100%;
+          margin: 0 10px;
+      }
+  </style>
+</head>
+<body>
+  <div class="form-wrapper">
+      <div class="form-container">
+          <h2>Submit/Update Feedback</h2>
+          <form action="" method="post" novalidate>
+              {{ form2.hidden_tag() }}
+              <p>
+                  <label for="userid">{{ form2.userid.label }}</label>
+                  {{ form2.userid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="productid">{{ form2.productid.label }}</label>
+                  {{ form2.productid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="sellerid">{{ form2.sellerid.label }}</label>
+                  {{ form2.sellerid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="review">{{ form2.review.label }}</label>
+                  {{ form2.review(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="revtime">{{ form2.revtime.label }}</label>
+                  {{ form2.revtime(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  {{ form2.submit2(class_="btn") }}
+              </p>
+          </form>
+      </div>
+
+      <div class="form-container">
+          <h2>Remove Feedback</h2>
+          <form action="" method="post" novalidate>
+              {{ form3.hidden_tag() }}
+              <p>
+                  <label for="userid">{{ form3.userid.label }}</label>
+                  {{ form3.userid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="productid">{{ form3.productid.label }}</label>
+                  {{ form3.productid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  <label for="sellerid">{{ form3.sellerid.label }}</label>
+                  {{ form3.sellerid(size=32, class_="form-input") }}
+              </p>
+              <p>
+                  {{ form3.submit3(class_="btn") }}
+              </p>
+          </form>
+      </div>
+  </div>
+</body>
+</html>
+
+<br>
+</br>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tables Side by Side</title>
+  <style>
+      .table-container {
+          display: inline-block;
+          margin: 10px;
+          vertical-align: top;
+      }
+  </style>
+</head>
+<body>
+  <div class="table-container">
+      <table border="1">
+          <tr>
+              <th>Product Feedback Summary</th>
+          </tr>
+          {% for rev in psum %}
+            <tr>
+              <td>Product ID {{rev.pid}} has {{rev.num}} Review(s)</td>
+            </tr>
+          {% endfor %}
+      </table>
+  </div>
+
+  <div class="table-container">
+      <table border="1">
+          <tr>
+              <th>Seller Feedback Summary</th>
+          </tr>
+          {% for rev in ssum %}
+            <tr>
+              <td>Seller ID {{rev.sid}} has {{rev.num}} Review(s)</td>
+            </tr>
+          {% endfor %}
+      </table>
+  </div>
+</body>
+
+{% endblock %}

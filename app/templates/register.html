@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Create your account</h1>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category if category else 'info' }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="post" novalidate class="auth-form">
+                {{ form.hidden_tag() }}
+                <div class="form-group">
+                    <label for="firstname" class="form-label">First name</label>
+                    {{ form.firstname(class="form-control", placeholder="") }}
+                    {% for error in form.firstname.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="lastname" class="form-label">Last name</label>
+                    {{ form.lastname(class="form-control", placeholder="") }}
+                    {% for error in form.lastname.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Email address</label>
+                    {{ form.email(class="form-control", placeholder="") }}
+                    {% for error in form.email.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    {{ form.password(class="form-control", placeholder="") }}
+                    {% for error in form.password.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    <label for="password2" class="form-label">Confirm password</label>
+                    {{ form.password2(class="form-control", placeholder="") }}
+                    {% for error in form.password2.errors %}
+                    <div class="error-message">{{ error }}</div>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.submit(class="btn btn-primary w-100", value="Create account") }}
+                </div>
+
+                <p class="form-notice">
+                    By creating an account, you agree to our Terms of Service and Privacy Policy.
+                </p>
+            </form>
+        </div>
+
+        <div class="auth-footer">
+            <div class="signin-callout">
+                Already have an account? <a href="{{ url_for('users.login') }}">Sign in</a>.
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.auth-wrapper {
+    min-height: calc(100vh - 76px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background-color: #f6f8fa;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 308px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.auth-header h1 {
+    font-size: 24px;
+    font-weight: 300;
+    letter-spacing: -0.5px;
+    color: #24292f;
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-label {
+    display: block;
+    font-size: 14px;
+    font-weight: 400;
+    color: #24292f;
+    margin-bottom: 6px;
+}
+
+.form-control {
+    width: 100%;
+    padding: 5px 12px;
+    font-size: 14px;
+    line-height: 20px;
+    color: #24292f;
+    background-color: #ffffff;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    box-shadow: none;
+    transition: border-color .15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #0969da;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(9, 105, 218, 0.3);
+}
+
+.error-message {
+    margin-top: 4px;
+    color: #cf222e;
+    font-size: 12px;
+}
+
+.btn-primary {
+    background-color: #1f883d;
+    border: 1px solid rgba(27, 31, 36, 0.15);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 5px 16px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+}
+
+.btn-primary:hover {
+    background-color: #1a7f37;
+}
+
+.form-notice {
+    margin-top: 16px;
+    margin-bottom: 0;
+    font-size: 12px;
+    color: #57606a;
+    text-align: center;
+}
+
+.auth-footer {
+    text-align: center;
+    padding: 16px;
+    border: 1px solid #d0d7de;
+    border-radius: 6px;
+    background-color: #f6f8fa;
+}
+
+.signin-callout {
+    font-size: 14px;
+    color: #24292f;
+}
+
+.signin-callout a {
+    color: #0969da;
+    text-decoration: none;
+}
+
+.signin-callout a:hover {
+    text-decoration: underline;
+}
+
+.alert {
+    padding: 8px 16px;
+    margin-bottom: 16px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.alert-success {
+    color: #1f883d;
+    background-color: #dafbe1;
+    border-color: rgba(31, 136, 61, 0.15);
+}
+
+.alert-danger {
+    color: #cf222e;
+    background-color: #ffebe9;
+    border-color: rgba(207, 34, 46, 0.15);
+}
+
+.alert-info {
+    color: #0969da;
+    background-color: #ddf4ff;
+    border-color: rgba(9, 105, 218, 0.15);
+}
+</style>
+{% endblock %}

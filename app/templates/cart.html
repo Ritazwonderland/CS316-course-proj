@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <!-- Sidebar with Cart Summary -->
+        <div class="col-md-3">
+            <div class="profile-sidebar">
+                <div class="profile-header text-center">
+                    <h4>Your Cart</h4>
+                    <p class="text-muted">You have {{ cart_items|length }} items</p>
+                </div>
+                <div class="profile-balance">
+                    <h5>Total Cost</h5>
+                    <h3 class="text-success">${{ "%.2f"|format(total) }}</h3>
+                </div>
+                <a href="{{ url_for('cart_items.checkout') }}" class="btn btn-success btn-block mt-3">
+                    <i class="fas fa-credit-card"></i> Proceed to Checkout
+                </a>
+            </div>
+        </div>
+
+        <!-- Main Content Area: Cart Items -->
+        <div class="col-md-9">
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-shopping-bag"></i> Items in Your Cart</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Flash Messages -->
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                        <div class="alert-container">
+                            {% for message in messages %}
+                            <div class="alert alert-info">
+                                {{ message }}
+                                <button class="close" onclick="this.parentElement.style.display='none'">&times;</button>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    {% endwith %}
+
+                    {% if cart_items %}
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Quantity</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in cart_items %}
+                                <tr>
+                                    <td>{{ item.product_name }}</td>
+                                    <td>${{ "%.2f"|format(item.price) }}</td>
+                                    <td>
+                                        <form action="{{ url_for('cart_items.update_cart_item', item_id=item.product_id) }}" method="POST">
+                                            <input type="number" name="quantity" value="{{ item.quantity }}" min="1" class="form-control form-control-sm">
+                                            <button type="submit" class="btn btn-primary btn-sm mt-2">Update</button>
+                                        </form>
+                                    </td>
+                                    <td>${{ "%.2f"|format(item.price * item.quantity) }}</td>
+                                    <td>
+                                        <form action="{{ url_for('cart_items.remove_from_cart', item_id=item.product_id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+                                        </form>
+                                        <form action="{{ url_for('cart_items.save_for_later', item_id=item.product_id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-secondary btn-sm">Save for Later</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <p class="text-muted">Your cart is empty.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Saved for Later Section -->
+            {% if saved_items %}
+            <div class="content-card">
+                <div class="card-header">
+                    <h3><i class="fas fa-bookmark"></i> Saved for Later</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Price</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in saved_items %}
+                                <tr>
+                                    <td>{{ item.product_name }}</td>
+                                    <td>${{ "%.2f"|format(item.price) }}</td>
+                                    <td>
+                                        <form action="{{ url_for('cart_items.restore_to_cart', item_id=item.product_id) }}" method="POST" style="display:inline;">
+                                            <button type="submit" class="btn btn-primary btn-sm">Restore to Cart</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+/* Flash Message Styling */
+.alert-container {
+    margin-bottom: 20px;
+}
+
+.alert {
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+.alert-success {
+    background-color: #2ecc71;
+    color: white;
+}
+
+.alert-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+.alert-info {
+    background-color: #3498db;
+    color: white;
+}
+
+.alert-warning {
+    background-color: #f39c12;
+    color: white;
+}
+</style>
+{% endblock %}
